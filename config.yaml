@@ -26,5 +26,5 @@ cleanup_days: 7             # 로컬 파일 보관 일수
 use_futures: true
 
 # 텔레그램 알림 (선택)
-telegram_bot_token: ""      # @BotFather에서 발급
-telegram_chat_id: ""        # 채팅 ID
+telegram_bot_token: "8239501033:AAGUmYvGOJ3lnMsP6Cok3rifIPHNHsnPRY4"
+telegram_chat_id: "8451071451"
