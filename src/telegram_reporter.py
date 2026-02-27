@@ -1,6 +1,7 @@
 """텔레그램 봇을 통한 상태 리포트 및 알림 모듈"""
 
 import logging
+import ssl
 from datetime import datetime, timezone
 
 import aiohttp
@@ -47,7 +48,11 @@ class TelegramReporter:
         try:
             url = f"https://api.telegram.org/bot{self.bot_token}/sendMessage"
             payload = {"chat_id": self.chat_id, "text": text, "parse_mode": "HTML"}
-            async with aiohttp.ClientSession() as session:
+            ssl_ctx = ssl.create_default_context()
+            ssl_ctx.check_hostname = False
+            ssl_ctx.verify_mode = ssl.CERT_NONE
+            conn = aiohttp.TCPConnector(ssl=ssl_ctx)
+            async with aiohttp.ClientSession(connector=conn) as session:
                 async with session.post(url, json=payload, timeout=aiohttp.ClientTimeout(total=10)) as resp:
                     if resp.status != 200:
                         body = await resp.text()
