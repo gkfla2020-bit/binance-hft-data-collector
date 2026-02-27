@@ -20,8 +20,8 @@ from src.integrity_logger import IntegrityLogger
 logging.basicConfig(level=logging.ERROR)
 
 SYMBOLS = ["btcusdt", "ethusdt", "xrpusdt", "solusdt", "bnbusdt", "dogeusdt"]
-COLLECT_SECONDS = 300
-DATA_DIR = Path("./data_test")
+COLLECT_SECONDS = 120
+DATA_DIR = Path("./data_test2")
 DATA_DIR.mkdir(exist_ok=True)
 
 

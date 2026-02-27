@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 data/
 data_test/
+data_test2/
 logs/
 *.parquet
 .kiro/
