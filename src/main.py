@@ -83,6 +83,16 @@ async def main(config_path: str = "config.yaml") -> None:
             stats = integrity_logger.get_periodic_stats()
             await telegram.send_daily_report(stats)
 
+    # 3분마다 실시간 시세 리포트
+    async def live_ticker():
+        await asyncio.sleep(30)  # 초기화 대기
+        while True:
+            try:
+                await telegram.send_live_ticker(ob_manager, buffer)
+            except Exception as e:
+                logger.warning(f"[라이브 티커] 전송 실패: {e}")
+            await asyncio.sleep(180)  # 3분
+
     # 강제 플러시 감시
     async def force_flush_monitor():
         while True:
@@ -99,6 +109,7 @@ async def main(config_path: str = "config.yaml") -> None:
         time_sync.run(),
         periodic_log(),
         daily_summary(),
+        live_ticker(),
         force_flush_monitor(),
     ]
 

@@ -239,3 +239,63 @@ class TelegramReporter:
         )
         await self.send_message(text)
 
+    async def send_live_ticker(self, ob_manager, buffer) -> None:
+        """3분마다 실시간 시세 + 스프레드 + 수집 현황 리포트"""
+        if not self.enabled:
+            return
+
+        rows = []
+        for sym_upper, state in ob_manager.books.items():
+            if not state.initialized or not state.bids or not state.asks:
+                rows.append(f"  ⚪ <code>{sym_upper:<10}</code> 초기화 중...")
+                continue
+
+            best_bid = max(state.bids.keys(), key=float)
+            best_ask = min(state.asks.keys(), key=float)
+            bid_f = float(best_bid)
+            ask_f = float(best_ask)
+            spread = ask_f - bid_f
+            spread_bps = (spread / ask_f) * 10000 if ask_f else 0
+            mid = (bid_f + ask_f) / 2
+
+            # 스프레드 상태 아이콘
+            if spread_bps < 1:
+                sp_icon = "🟢"
+            elif spread_bps < 3:
+                sp_icon = "🟡"
+            else:
+                sp_icon = "🔴"
+
+            rows.append(
+                f"  {sp_icon} <code>{sym_upper:<10}</code> "
+                f"<b>${mid:>10,.2f}</b>  "
+                f"sp:<code>{spread_bps:.1f}bp</code>"
+            )
+
+        # 버퍼 수집 현황
+        ob_total = sum(len(v) for v in buffer._orderbook_data.values())
+        tr_total = sum(len(v) for v in buffer._trade_data.values())
+        mem_mb = buffer.estimate_memory_usage() / (1024 * 1024)
+
+        text = (
+            "━━━━━━━━━━━━━━━━━━━━\n"
+            "📡 <b>LIVE TICKER</b>\n"
+            "━━━━━━━━━━━━━━━━━━━━\n"
+            f"🕐 {self._now_str()}\n"
+            "\n"
+            "┌── 💱 시세 / 스프레드 ──┐\n"
+            + "\n".join(rows) + "\n"
+            "└────────────────────────┘\n"
+            "\n"
+            "┌── 📊 버퍼 현황 ───────┐\n"
+            f"│ 오더북  <code>{ob_total:>8,}</code>건     │\n"
+            f"│ 체결    <code>{tr_total:>8,}</code>건     │\n"
+            f"│ 메모리  <code>{mem_mb:>7.1f}MB</code>     │\n"
+            "└────────────────────────┘\n"
+            "\n"
+            "🟢 수집 정상 가동 중\n"
+            "━━━━━━━━━━━━━━━━━━━━"
+        )
+        await self.send_message(text)
+
+
