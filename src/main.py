@@ -125,8 +125,12 @@ async def main(config_path: str = "config.yaml") -> None:
         logger.info("종료 신호 수신, 마지막 플러시 실행 중...")
         shutdown_event.set()
 
-    for sig in (signal.SIGINT, signal.SIGTERM):
-        loop.add_signal_handler(sig, _signal_handler)
+    if sys.platform != "win32":
+        for sig in (signal.SIGINT, signal.SIGTERM):
+            loop.add_signal_handler(sig, _signal_handler)
+    else:
+        # 윈도우: Ctrl+C로 종료 시 마지막 플러시 실행
+        signal.signal(signal.SIGINT, lambda s, f: shutdown_event.set())
 
     # 태스크 실행
     gathered = asyncio.gather(*tasks, return_exceptions=True)
