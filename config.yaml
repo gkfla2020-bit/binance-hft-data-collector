@@ -8,7 +8,7 @@ symbols:
   - dogeusdt
 
 # 저장 설정
-flush_interval: 1800        # 30분 (초)
+flush_interval: 60          # 1분 (초)
 data_dir: "./data"
 log_dir: "./logs"
 max_buffer_mb: 500
