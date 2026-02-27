@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.DS_Store
+.hypothesis/
+.pytest_cache/
+data/
+data_test/
+logs/
+*.parquet
+.kiro/

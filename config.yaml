@@ -1,0 +1,30 @@
+# 바이낸스 고빈도 데이터 수집 시스템 설정
+symbols:
+  - btcusdt
+  - ethusdt
+  - xrpusdt
+  - solusdt
+  - bnbusdt
+  - dogeusdt
+
+# 저장 설정
+flush_interval: 3600        # 1시간 (초)
+data_dir: "./data"
+log_dir: "./logs"
+max_buffer_mb: 500
+
+# 오더북 설정
+orderbook_depth: 1000       # REST 스냅샷 깊이
+orderbook_top_levels: 20    # 저장할 호가 수
+
+# 클라우드 동기화 (rclone)
+cloud_remote: ""            # rclone 리모트 이름 (예: gdrive)
+cloud_path: ""              # 클라우드 저장 경로 (예: crypto_data)
+cleanup_days: 7             # 로컬 파일 보관 일수
+
+# 선물 API (청산/펀딩비)
+use_futures: true
+
+# 텔레그램 알림 (선택)
+telegram_bot_token: ""      # @BotFather에서 발급
+telegram_chat_id: ""        # 채팅 ID
